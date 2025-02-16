@@ -43,7 +43,6 @@ func (e *ParseError) CustomerError() string {
 // 	return strBuilder.String(), nil
 // }
 
-
 func lookupOp(str string) api.DeriveOp {
 	switch str {
 	case "IF":

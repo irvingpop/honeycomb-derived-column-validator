@@ -111,7 +111,7 @@ type DerivedParam_Derived struct {
 }
 
 func (*DerivedParam_Derived) isDerivedParam_Value() {}
-func (*DerivedParam_Static) isDerivedParam_Value() {}
+func (*DerivedParam_Static) isDerivedParam_Value()  {}
 
 // For the type derived from proto: DerivedParam_Derived
 func (m *DerivedParam_Derived) MarshalTo(data []byte) (n int, err error) {
@@ -131,7 +131,6 @@ func (m *DerivedParam_Derived) Size() int {
 func (m *DerivedParam_Static) Size() int {
 	return 0
 }
-
 
 // func (m *DerivedParam) Reset()         { *m = DerivedParam{} }
 // func (m *DerivedParam) String() string { return proto.CompactTextString(m) }
@@ -228,10 +227,10 @@ const (
 )
 
 type RetrieverQuerySpec_Filter struct {
-	Op                   FilterOp                                      `protobuf:"varint,1,opt,name=op,proto3,enum=api.FilterOp" json:"op,omitempty"`
-	Column               int64 													               `protobuf:"varint,2,opt,name=column,proto3" json:"column"`
-	Value                []*Data_Value                                 `protobuf:"bytes,3,rep,name=value,proto3" json:"value,omitempty"`
-	DeprecatedJoinColumn string                                        `protobuf:"bytes,4,opt,name=join_column,json=joinColumn,proto3" json:"join_column,omitempty"` // Deprecated: Do not use.
+	Op                   FilterOp      `protobuf:"varint,1,opt,name=op,proto3,enum=api.FilterOp" json:"op,omitempty"`
+	Column               int64         `protobuf:"varint,2,opt,name=column,proto3" json:"column"`
+	Value                []*Data_Value `protobuf:"bytes,3,rep,name=value,proto3" json:"value,omitempty"`
+	DeprecatedJoinColumn string        `protobuf:"bytes,4,opt,name=join_column,json=joinColumn,proto3" json:"join_column,omitempty"` // Deprecated: Do not use.
 }
 
 func FilterOpIsUnary(op FilterOp) bool {

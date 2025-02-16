@@ -65,7 +65,7 @@ func ANTLRParse(expression string, debug bool) (*api.DerivedValue, error) {
 	return l.result()
 }
 
-type ColumnMapper interface {}
+type ColumnMapper interface{}
 
 type antlrListener struct {
 	antlr.DefaultErrorListener
