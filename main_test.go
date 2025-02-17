@@ -27,6 +27,26 @@ func TestParseDerived(t *testing.T) {
 			input:   "IF(1,2)",
 			wantErr: false,
 		},
+		// {
+		// 	name:    "valid JSON input",
+		// 	input:   `{"expression": "IF(EQUALS($http.response.status_code, 200), 1)"}`,
+		// 	wantErr: false,
+		// },
+		// {
+		// 	name:    "invalid JSON (missing expression key)",
+		// 	input:   `{"wrong_key": "IF(1,2)"}`,
+		// 	wantErr: true,
+		// },
+		// {
+		// 	name:    "invalid JSON syntax",
+		// 	input:   `{"expression": "IF(1,2)"`, // missing closing brace
+		// 	wantErr: true,
+		// },
+		// {
+		// 	name:    "complex valid expression",
+		// 	input:   `IF(AND(NOT(EXISTS($trace.parent_id)),EXISTS($duration_ms)),LTE($duration_ms,300))`,
+		// 	wantErr: false,
+		// },
 	}
 
 	for _, tc := range tests {

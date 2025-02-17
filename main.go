@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -15,7 +16,8 @@ func main() {
 	verbose := flag.Bool("v", false, "Verbose mode prints extra info")
 	flag.Parse()
 
-	var srcText string
+	var srcText, expressionText string
+	jsonMode := false
 
 	if *filePath != "" {
 		// Read the entire file content
@@ -31,8 +33,6 @@ func main() {
 		var sb strings.Builder
 		for scanner.Scan() {
 			line := scanner.Text()
-			// For example, print each line (could also transform it if needed)
-			fmt.Println(line)
 			sb.WriteString(line + "\n")
 		}
 		if err := scanner.Err(); err != nil {
@@ -42,9 +42,41 @@ func main() {
 		srcText = sb.String()
 	}
 
-	if err := ParseDerived(srcText, *verbose); err != nil {
+	// Try to parse as JSON first
+	var jsonData map[string]interface{}
+	if err := json.Unmarshal([]byte(srcText), &jsonData); err == nil {
+		// If JSON parsing succeeds, look for 'expression' field
+		if *verbose {
+			fmt.Println("Received JSON: ", srcText)
+		}
+		if expr, ok := jsonData["expression"].(string); ok {
+			jsonMode = true
+			expressionText = expr
+		} else {
+			fmt.Fprintf(os.Stderr, "Missing 'expression' value: %v\n", err)
+			os.Exit(1)
+		}
+	} else {
+		// it wasn't JSON, so proceed in non-JSON mode
+		expressionText = srcText
+	}
+
+	if err := ParseDerived(expressionText, *verbose); err != nil {
 		fmt.Fprintf(os.Stderr, "Error parsing derived column: %v\n", err)
 		os.Exit(1)
+	}
+
+	// output JSON meant for the TF external data source, with "expression" as the key name
+	if jsonMode {
+		result := map[string]string{
+			"expression": expressionText,
+		}
+		jsonResult, err := json.Marshal(result)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error creating JSON response: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Println(string(jsonResult))
 	}
 }
 

@@ -6,7 +6,7 @@ A command-line tool to validate and test Honeycomb derived column expressions.
 
 This tool helps validate derived column expressions used in Honeycomb by parsing them and checking for syntax errors. It can be used to test expressions before adding them to your Honeycomb datasets.
 
-## Running it
+## Running it on the command line
 
 ### Command Usage
 
@@ -61,6 +61,14 @@ Output:
     exit status 1
 
 
-## Ideas for running in Terraform
-1. As an external data source like: https://gist.github.com/irvingpop/968464132ded25a206ced835d50afa6b
-2. Entirely outside of TF plan runs, like with Github Actions
+## Running it in Terraform
+
+The command automatically detects if has received JSON via stdin, intended for use with Terraform's [external data source](https://registry.terraform.io/providers/hashicorp/external/latest/docs/data-sources/external)
+
+The expected input should look like this:
+
+    {"expression": "IF(EQUALS(\$http.response.status_code, 200), 1)"}
+
+And the expected output will be usable as `data.external.resourcename.result.expression`
+
+See the [Terraform examples][examples/terraform/external_data] for more.
