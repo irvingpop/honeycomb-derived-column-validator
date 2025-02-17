@@ -71,4 +71,4 @@ The expected input should look like this:
 
 And the expected output will be usable as `data.external.resourcename.result.expression`
 
-See the [Terraform examples][examples/terraform/external_data] for more.
+See the [Terraform examples](examples/terraform/external_data) for more.
