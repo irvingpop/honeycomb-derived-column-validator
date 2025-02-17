@@ -2,7 +2,8 @@ package parser
 
 import (
 	"errors"
-	"fmt"
+	"log"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -13,11 +14,14 @@ import (
 
 // Debug controls whether debug logging is printed.
 var Debug bool // set to true to enable debug output
+var logger *log.Logger
 
 var lexerPool sync.Pool
 var parserPool sync.Pool
 
 func init() {
+	logger = log.New(os.Stderr, "", 0)
+
 	lexerPool.New = func() any {
 		return NewHCDCLexer(nil)
 	}
@@ -120,7 +124,7 @@ func (l *antlrListener) EnterFun(c *FunContext) {
 	})
 
 	if Debug {
-		fmt.Println("operator: ", name)
+		logger.Printf("operator: %s", name)
 	}
 }
 
@@ -160,7 +164,7 @@ func (l *antlrListener) ExitColumn(c *ColumnContext) {
 	}
 
 	if Debug {
-		fmt.Println("column: ", ident)
+		logger.Printf("column: %s", ident)
 	}
 }
 
@@ -193,7 +197,7 @@ func (l *antlrListener) ExitLiteral(c *LiteralContext) {
 		l.err(err.Error())
 	} else {
 		if Debug {
-			fmt.Println("literal: ", static)
+			logger.Printf("literal: %v", static)
 		}
 	}
 }

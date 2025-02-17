@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -47,7 +48,8 @@ func (p *Processor) processInput(input string) (string, bool, error) {
 	if err := json.Unmarshal([]byte(input), &jsonData); err == nil {
 		// If JSON parsing succeeds, look for 'expression' field
 		if p.config.Verbose {
-			fmt.Println("Received JSON: ", input)
+			l := log.New(os.Stderr, "", 0)
+			l.Printf("Received JSON: %s", input)
 		}
 		if expr, ok := jsonData["expression"].(string); ok {
 			return expr, true, nil
@@ -71,19 +73,16 @@ func main() {
 
 	srcText, err := readInput(config.FilePath)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		os.Exit(1)
+		log.Fatalf("%v\n", err)
 	}
 
 	expressionText, jsonMode, err := processor.processInput(srcText)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		os.Exit(1)
+		log.Fatalf("%v\n", err)
 	}
 
 	if err := ParseDerived(expressionText, config.Verbose); err != nil {
-		fmt.Fprintf(os.Stderr, "Error parsing derived column: %v\n", err)
-		os.Exit(1)
+		log.Fatalf("Error parsing derived column: %v\n", err)
 	}
 
 	if jsonMode {
@@ -92,8 +91,7 @@ func main() {
 		}
 		jsonResult, err := json.Marshal(result)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error creating JSON response: %v\n", err)
-			os.Exit(1)
+			log.Fatalf("Error creating JSON response: %v\n", err)
 		}
 		fmt.Println(string(jsonResult))
 	}
